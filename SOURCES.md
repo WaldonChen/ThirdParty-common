@@ -1,5 +1,17 @@
 Third-party software (shipped) versions according to OpenFOAM version
 
+# OpenFOAM-2306
+
+- ADIOS2-2.8.3
+- CGAL-4.14.3
+- ParaView-v5.11.1   *update*
+- boost_1_74_0
+- fftw-3.3.10
+- openmpi-4.1.2
+- scotch_6.1.0
+- kahip-3.15         *update*
+
+
 # OpenFOAM-2212
 
 - ADIOS2-2.8.3       *new*

@@ -541,8 +541,8 @@ easier to use `grep` and find the relevant pages and links.
 [newer scotch]:   https://gitlab.inria.fr/scotch/scotch/-/archive/v7.0.1/scotch-v7.0.1.tar.gz
 
 [page kahip]:     http://algo2.iti.kit.edu/documents/kahip/
-[older kahip]:    http://algo2.iti.kit.edu/schulz/software_releases/KaHIP_2.12.tar.gz
-[link kahip]:     https://github.com/KaHIP/KaHIP/archive/v3.14.tar.gz
+[older kahip]:    https://github.com/KaHIP/KaHIP/archive/v3.14.tar.gz
+[link kahip]:     https://github.com/KaHIP/KaHIP/archive/v3.15.tar.gz
 
 [page metis]:     http://glaros.dtc.umn.edu/gkhome/metis/metis/overview
 [link metis]:     http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
@@ -571,11 +571,11 @@ easier to use `grep` and find the relevant pages and links.
 [link FFTW]:      http://www.fftw.org/fftw-3.3.10.tar.gz
 
 [page petsc]:     https://www.mcs.anl.gov/petsc/
-[link petsc]:     https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.18.2.tar.gz
+[link petsc]:     https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
 
 [page hypre]:     https://computing.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/
 [repo hypre]:     https://github.com/hypre-space/hypre/
-[link hypre]:     https://github.com/hypre-space/hypre/archive/v2.24.0.tar.gz
+[link hypre]:     https://github.com/hypre-space/hypre/archive/v2.28.0.tar.gz
 
 [page cgns]:      http://cgns.github.io/
 [link ccmio]:     http://portal.nersc.gov/project/visit/third_party/libccmio-2.6.1.tar.gz (check usage conditions)
@@ -597,7 +597,7 @@ easier to use `grep` and find the relevant pages and links.
 [link ParaView58]: http://www.paraview.org/files/v5.8/ParaView-v5.8.1.tar.xz
 [link ParaView59]: http://www.paraview.org/files/v5.9/ParaView-v5.9.1.tar.xz
 [link ParaView510]: http://www.paraview.org/files/v5.10/ParaView-v5.10.1.tar.xz
-[link ParaView]:   http://www.paraview.org/files/v5.11/ParaView-v5.11.0.tar.xz
+[link ParaView]:   http://www.paraview.org/files/v5.11/ParaView-v5.11.1.tar.xz
 
 [page mesa]:  http://mesa3d.org/
 [link mesa]:  ftp://ftp.freedesktop.org/pub/mesa/mesa-17.1.1.tar.xz
@@ -611,4 +611,4 @@ easier to use `grep` and find the relevant pages and links.
 
 ---
 
-Copyright 2016-2022 OpenCFD Ltd
+Copyright 2016-2023 OpenCFD Ltd
