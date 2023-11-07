@@ -6,7 +6,7 @@
 #    \\/     M anipulation  |
 #------------------------------------------------------------------------------
 #     Copyright (C) 2011-2016 OpenFOAM Foundation
-#     Copyright (C) 2016-2021 OpenCFD Ltd.
+#     Copyright (C) 2016-2023 OpenCFD Ltd.
 #------------------------------------------------------------------------------
 # License
 #     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
@@ -16,6 +16,7 @@
 #
 # Description
 #     ParaView make/install helper functions
+#     To be loaded *after* etc/tools/CMakeFunctions
 #
 # Note
 #     Obtaining paths via 'python-config' may not always resolve properly:
@@ -132,23 +133,8 @@ setParaViewVersion()
 
 #------------------------------------------------------------------------------
 
-#
-# Set CMake cache variables.
-# Automatically adds -D prefix it needed
-#
-addCMakeVariable()
-{
-    local i
-    for i
-    do
-        case "$i" in
-        ('') ;;  # empty
-        (-*) CMAKE_VARIABLES="${CMAKE_VARIABLES} ${i}" ;;
-        (*)  CMAKE_VARIABLES="${CMAKE_VARIABLES} -D${i}" ;;
-        esac
-    done
-}
-
+# addCMakeVariable : defined in etc/tools/CMakeFunctions
+# addVerbosity : defined in etc/tools/CMakeFunctions
 
 #
 # General settings (version-dependent)
@@ -161,18 +147,6 @@ addGeneral()
         addCMakeVariable "BUILD_SHARED_LIBS=ON"
     else
         addCMakeVariable "PARAVIEW_BUILD_SHARED_LIBS=ON"
-    fi
-}
-
-
-#
-# Verbose makefiles
-#
-addVerbosity()
-{
-    if [ "${withVERBOSE:=false}" = true ]
-    then
-        addCMakeVariable "CMAKE_VERBOSE_MAKEFILE=TRUE"
     fi
 }
 

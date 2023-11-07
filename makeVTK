@@ -6,7 +6,7 @@
 #   \\  /    A nd           | www.openfoam.com
 #    \\/     M anipulation  |
 #------------------------------------------------------------------------------
-#     Copyright (C) 2016-2021 OpenCFD Ltd.
+#     Copyright (C) 2016-2023 OpenCFD Ltd.
 #------------------------------------------------------------------------------
 # License
 #     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
@@ -37,6 +37,7 @@ then
     }
 fi
 . "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ThirdPartyFunctions
+. "${WM_THIRD_PARTY_DIR:?}"/etc/tools/CMakeFunctions
 . "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ParaViewFunctions
 . "${WM_THIRD_PARTY_DIR:?}"/etc/tools/vtkFunctions
 #------------------------------------------------------------------------------

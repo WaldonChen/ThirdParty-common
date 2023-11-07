@@ -5,7 +5,7 @@
 #   \\  /    A nd           | www.openfoam.com
 #    \\/     M anipulation  |
 #------------------------------------------------------------------------------
-#     Copyright (C) 2016-2021 OpenCFD Ltd.
+#     Copyright (C) 2016-2023 OpenCFD Ltd.
 #------------------------------------------------------------------------------
 # License
 #     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
@@ -15,7 +15,7 @@
 #
 # Description
 #     VTK (library) make/install helper functions.
-#     To be loaded *after* etc/tools/ParaViewFunctions
+#     To be loaded *after* etc/tools/CMakeFunctions, ParaViewFunctions
 #
 #------------------------------------------------------------------------------
 

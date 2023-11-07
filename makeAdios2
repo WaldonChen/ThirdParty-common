@@ -5,7 +5,7 @@
 #   \\  /    A nd           | www.openfoam.com
 #    \\/     M anipulation  |
 #------------------------------------------------------------------------------
-#     Copyright (C) 2018-2021 OpenCFD Ltd.
+#     Copyright (C) 2018-2023 OpenCFD Ltd.
 #------------------------------------------------------------------------------
 # License
 #     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
@@ -59,6 +59,7 @@ then
     }
 fi
 . "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ThirdPartyFunctions
+. "${WM_THIRD_PARTY_DIR:?}"/etc/tools/CMakeFunctions
 #------------------------------------------------------------------------------
 # Obtain version from OpenFOAM etc/config.sh file:
 _foamConfig adios2
@@ -82,6 +83,7 @@ options:
   -gcc              Force use of gcc/g++
   -cmake PATH       With cmake from the given path
   -mpi-home PATH    With hint for MPI_HOME
+  -DNAME=VALUE      add cmake variable
   -list             List available unpacked source versions
   -help             Display usage help
 
@@ -123,6 +125,9 @@ do
     ADIOS2-[0-9]* | ADIOS2-git* | ADIOS-[0-9]* | ADIOS-git* | \
     adios2-[0-9]* | adios2-git* | adios-[0-9]* | adios-git*)
         PACKAGE="${1%%/}"
+        ;;
+    -D[A-Z]*=* | [A-Z]*=*)  # cmake variables
+        addCMakeVariable "$1"
         ;;
     *)
         die "unknown option/argument: '$1'"

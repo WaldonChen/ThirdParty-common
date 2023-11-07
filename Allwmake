@@ -7,7 +7,7 @@
 #    \\/     M anipulation  |
 #------------------------------------------------------------------------------
 #     Copyright (C) 2011-2016 OpenFOAM Foundation
-#     Copyright (C) 2016-2020 OpenCFD Ltd.
+#     Copyright (C) 2016-2023 OpenCFD Ltd.
 #------------------------------------------------------------------------------
 # License
 #     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
@@ -48,7 +48,10 @@ echo Build MPI libraries if required
 echo "    $MPI_ARCH_PATH"
 case "$WM_MPLIB" in
 (OPENMPI | MPICH)
-    ./make"$WM_MPLIB" -test "$MPI_ARCH_PATH" || ./make"$WM_MPLIB"
+    if ! ./make"$WM_MPLIB" -test "$MPI_ARCH_PATH"
+    then
+        ./make"$WM_MPLIB"
+    fi
     ;;
 esac
 

@@ -36,6 +36,7 @@ then
     }
 fi
 . "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ThirdPartyFunctions
+. "${WM_THIRD_PARTY_DIR:?}"/etc/tools/CMakeFunctions
 . "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ParaViewFunctions
 #------------------------------------------------------------------------------
 
