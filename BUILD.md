@@ -588,6 +588,12 @@ easier to use `grep` and find the relevant pages and links.
 [link zlib]:      https://sourceforge.net/projects/libpng/files/zlib/1.2.11/zlib-1.2.11.tar.xz
 
 
+<!-- profilint -->
+
+[link extrae]:     https://github.com/bsc-performance-tools/extrae/archive/refs/tags/4.0.6.tar.gz
+[link libunwind]:  https://github.com/libunwind/libunwind/releases/download/v1.7.2/libunwind-1.7.2.tar.gz
+[link papi]:       http://icl.utk.edu/projects/papi/downloads/papi-7.0.1.tar.gz
+
 <!-- Visualization -->
 
 [page ParaView]:  http://www.paraview.org/
@@ -597,7 +603,8 @@ easier to use `grep` and find the relevant pages and links.
 [link ParaView58]: http://www.paraview.org/files/v5.8/ParaView-v5.8.1.tar.xz
 [link ParaView59]: http://www.paraview.org/files/v5.9/ParaView-v5.9.1.tar.xz
 [link ParaView510]: http://www.paraview.org/files/v5.10/ParaView-v5.10.1.tar.xz
-[link ParaView]:   http://www.paraview.org/files/v5.11/ParaView-v5.11.1.tar.xz
+[link ParaView511]: http://www.paraview.org/files/v5.11/ParaView-v5.11.1.tar.xz
+[link ParaView]:   http://www.paraview.org/files/v5.11/ParaView-v5.11.2.tar.xz
 
 [page mesa]:  http://mesa3d.org/
 [link mesa]:  ftp://ftp.freedesktop.org/pub/mesa/mesa-17.1.1.tar.xz
