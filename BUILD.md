@@ -419,6 +419,7 @@ you may have additional hurdles to using the newest versions of clang.
 | [boost][page boost]   | [download][link boost]
 | [CGAL][page CGAL]     | [download][link CGAL]
 | [FFTW][page FFTW]     | [download][link FFTW]
+| [HDF5][page HDF5]     | [download][link HDF5]
 | [PETSC][page PETSC]   | [download][link PETSC]
 | [HYPRE][page HYPRE]   | [repo][repo HYPRE] or [download][link HYPRE]
 | [ADF/CGNS][page CGNS], ccm | [link ccmio][link ccmio]
@@ -526,7 +527,11 @@ easier to use `grep` and find the relevant pages and links.
 <!-- parallel -->
 [page adios]:     https://csmd.ornl.gov/software/adios2
 [repo adios]:     https://github.com/ornladios/ADIOS2
-[link adios]:     https://github.com/ornladios/ADIOS2/archive/v2.8.3.tar.gz
+[link adios]:     https://github.com/ornladios/ADIOS2/archive/v2.10.1.tar.gz
+
+[page hdf5]:      https://www.hdfgroup.org
+[repo hdf5]:      https://github.com/HDFGroup/hdf5
+[link hdf5]:      https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.4.3.tar.gz
 
 [page zfp]:       http://computation.llnl.gov/projects/floating-point-compression/zfp-versions
 
@@ -555,7 +560,7 @@ easier to use `grep` and find the relevant pages and links.
 [link mpich]:     http://www.mpich.org/static/downloads/3.4.2/mpich-3.4.2.tar.gz
 
 [page mvpapich]:  http://mvapich.cse.ohio-state.edu/
-[link mvpapich]:  http://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich2-2.3.6.tar.gz
+[link mvpapich]:  https://mvapich.cse.ohio-state.edu/download/mvapich/mv2/mvapich2-2.3.7-1.tar.gz
 
 <!-- general -->
 [page cmake]:     http://www.cmake.org/
@@ -570,12 +575,12 @@ easier to use `grep` and find the relevant pages and links.
 [page FFTW]:      http://www.fftw.org/
 [link FFTW]:      http://www.fftw.org/fftw-3.3.10.tar.gz
 
-[page petsc]:     https://www.mcs.anl.gov/petsc/
-[link petsc]:     https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
+[page petsc]:     https://petsc.org/
+[link petsc]:     https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-lite-3.21.2.tar.gz
 
 [page hypre]:     https://computing.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/
 [repo hypre]:     https://github.com/hypre-space/hypre/
-[link hypre]:     https://github.com/hypre-space/hypre/archive/v2.28.0.tar.gz
+[link hypre]:     https://github.com/hypre-space/hypre/archive/v2.31.0.tar.gz
 
 [page cgns]:      http://cgns.github.io/
 [link ccmio]:     http://portal.nersc.gov/project/visit/third_party/libccmio-2.6.1.tar.gz (check usage conditions)
@@ -590,8 +595,8 @@ easier to use `grep` and find the relevant pages and links.
 
 <!-- profilint -->
 
-[link extrae]:     https://github.com/bsc-performance-tools/extrae/archive/refs/tags/4.0.6.tar.gz
-[link libunwind]:  https://github.com/libunwind/libunwind/releases/download/v1.7.2/libunwind-1.7.2.tar.gz
+[link extrae]:     https://github.com/bsc-performance-tools/extrae/archive/refs/tags/4.1.7.tar.gz
+[link libunwind]:  https://github.com/libunwind/libunwind/releases/download/v1.8.1/libunwind-1.8.1.tar.gz
 [link papi]:       http://icl.utk.edu/projects/papi/downloads/papi-7.0.1.tar.gz
 
 <!-- Visualization -->
@@ -603,8 +608,9 @@ easier to use `grep` and find the relevant pages and links.
 [link ParaView58]: http://www.paraview.org/files/v5.8/ParaView-v5.8.1.tar.xz
 [link ParaView59]: http://www.paraview.org/files/v5.9/ParaView-v5.9.1.tar.xz
 [link ParaView510]: http://www.paraview.org/files/v5.10/ParaView-v5.10.1.tar.xz
-[link ParaView511]: http://www.paraview.org/files/v5.11/ParaView-v5.11.1.tar.xz
-[link ParaView]:   http://www.paraview.org/files/v5.11/ParaView-v5.11.2.tar.xz
+[link ParaView511]: http://www.paraview.org/files/v5.11/ParaView-v5.11.2.tar.xz
+[link ParaView512]: http://www.paraview.org/files/v5.12/ParaView-v5.12.1.tar.xz
+[link ParaView]:    http://www.paraview.org/files/v5.12/ParaView-v5.12.1.tar.xz
 
 [page mesa]:  http://mesa3d.org/
 [link mesa]:  ftp://ftp.freedesktop.org/pub/mesa/mesa-17.1.1.tar.xz
@@ -618,4 +624,4 @@ easier to use `grep` and find the relevant pages and links.
 
 ---
 
-Copyright 2016-2023 OpenCFD Ltd
+Copyright 2016-2024 OpenCFD Ltd
