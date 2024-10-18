@@ -1,0 +1,163 @@
+#!/bin/sh
+#------------------------------------------------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | www.openfoam.com
+#    \\/     M anipulation  |
+#------------------------------------------------------------------------------
+#     Copyright (C) 2011 OpenFOAM Foundation
+#     Copyright (C) 2016-2021 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
+#
+# Script
+#     makeSpectra
+#
+# Description
+#     Build script for Spectra.
+#
+# ----------------------------------------------
+# NO USER-CONFIGURABLE SETTINGS WITHIN THIS FILE
+#------------------------------------------------------------------------------
+if :; then # Run from third-party directory
+  cd "${0%/*}" || exit
+  wmakeCheckPwd "$WM_THIRD_PARTY_DIR" 2>/dev/null || {
+    echo "Error (${0##*/}) : not located in \$WM_THIRD_PARTY_DIR"
+    echo "    Check your OpenFOAM environment and installation"
+    exit 1
+  }
+fi
+. "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ThirdPartyFunctions
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Obtain version from OpenFOAM etc/config.sh file:
+_foamConfig spectra
+
+PACKAGE="${SPECTRA_VERSION:-system}"
+
+# Obtain Eigen version from OpenFOAM etc/config.sh file:
+_foamConfig eigen
+
+EIGEN_PACKAGE="${EIGEN_VERSION:-system}"
+
+#------------------------------------------------------------------------------
+printVersions() {
+  listPackageVersions spectra
+  exit 0
+}
+printHelp() {
+  cat <<USAGE
+
+Usage: ${0##*/} [OPTION] spectra-VERSION
+options:
+  -force        Force compilation, even if binary already exists
+  -gcc          Force use of gcc/g++
+  -toolchain PATH   Specify toolchain file 
+  -list         List available unpacked source versions
+  -help         Display usage help
+
+* Build spectra
+      ${PACKAGE:-[unspecified]}
+
+USAGE
+  showDownloadHint spectra
+  exit 0 # Clean exit
+}
+#------------------------------------------------------------------------------
+exportCompiler # Compiler info for Spectra/configure
+
+unset optForce
+
+# Parse options
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+  '') ;; # Ignore empty
+  -h | -help*) printHelp ;;
+  -list) printVersions ;;
+  -gcc) useGcc ;;
+  -force) optForce=true ;;
+  -toolchain)
+    [ "$#" -ge 2 ] || die "'$1' option requires an argument"
+    toolchainFile="${2%%/}"
+    shift
+    ;;
+
+  spectra/* | sources/spectra-* | \
+    spectra-[0-9]*)
+    PACKAGE="${1%%/}"
+    ;;
+  *)
+    die "unknown option/argument: '$1'"
+    ;;
+  esac
+  shift
+done
+
+if [ -z "$PACKAGE" ]; then
+  die "The Spectra package/version not specified"
+elif _foamIsNone "$PACKAGE" || _foamIsSystem "$PACKAGE"; then
+  echo "Using none/system (skip ThirdParty build of Spectra)"
+  exit 0
+fi
+
+#------------------------------------------------------------------------------
+#
+# Build Spectra
+#   *PACKAGE : name-version of the package
+#   *SOURCE  : location of original sources
+#   *PREFIX  : installation directory
+
+PKG_SOURCE="$(findSourceDir "$PACKAGE")"
+PACKAGE="$(basename "$PACKAGE")"
+PKG_PREFIX="$installBASE/$PACKAGE"
+export GIT_DIR="$PKG_SOURCE/.git"
+
+EIGEN_PACKAGE="$(basename "$EIGEN_PACKAGE")"
+EIGEN_PKG_PREFIX="$installBASE/$EIGEN_PACKAGE"
+
+if [ -z "$optForce" ] &&
+  [ -d "$PKG_PREFIX" ] &&
+  [ -r "$PKG_PREFIX/include/Spectra" ]; then
+  echo "Already built: $PACKAGE"
+else
+  echo "Starting build: $PACKAGE"
+  (
+    PKG_BUILD="$buildBASE/$PACKAGE"
+    cd "$PKG_SOURCE" || exit
+    make distclean 2>/dev/null || true
+
+    rm -rf "$PKG_BUILD"
+    mkdir -p "$PKG_BUILD"
+
+    unset buildOpt
+    if [ -d "$EIGEN_PKG_PREFIX" ]; then
+      buildOpt="${buildOpt} -DEigen3_DIR=${EIGEN_PKG_PREFIX}/share/eigen3/cmake"
+    fi
+    if [ -n "$toolchainFile" ]; then
+      [ ! -e "$toolchainFile" ] && die "Toolchain file '${toolchainFile}' not exists!"
+      buildOpt="${buildOpt} --toolchain ${TOOLCHAIN_FILE}"
+    fi
+
+    cmake=$(findCMake)
+
+    cd "$PKG_BUILD" && set -x &&
+      ${cmake:?} \
+        -B "$PKG_BUILD" \
+        -S "$PKG_SOURCE" \
+        -DCMAKE_INSTALL_PREFIX="$PKG_PREFIX" \
+        -DCMAKE_BUILD_TYPE=Release \
+        $buildOpt &&
+      set +x &&
+      time make -j $WM_NCOMPPROCS &&
+      make install &&
+      echo "Built: $PACKAGE"
+  ) || {
+    echo "Error building: $PACKAGE"
+    exit 1
+  }
+fi
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,154 @@
+#!/bin/sh
+#------------------------------------------------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | www.openfoam.com
+#    \\/     M anipulation  |
+#------------------------------------------------------------------------------
+#     Copyright (C) 2011 OpenFOAM Foundation
+#     Copyright (C) 2016-2021 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
+#
+# Script
+#     makeEigen
+#
+# Description
+#     Build script for Eigen.
+#
+# ----------------------------------------------
+# NO USER-CONFIGURABLE SETTINGS WITHIN THIS FILE
+#------------------------------------------------------------------------------
+if :; then # Run from third-party directory
+  cd "${0%/*}" || exit
+  wmakeCheckPwd "$WM_THIRD_PARTY_DIR" 2>/dev/null || {
+    echo "Error (${0##*/}) : not located in \$WM_THIRD_PARTY_DIR"
+    echo "    Check your OpenFOAM environment and installation"
+    exit 1
+  }
+fi
+. "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ThirdPartyFunctions
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Obtain version from OpenFOAM etc/config.sh file:
+_foamConfig eigen
+
+PACKAGE="${EIGEN_VERSION:-system}"
+
+#------------------------------------------------------------------------------
+printVersions() {
+  listPackageVersions eigen
+  exit 0
+}
+printHelp() {
+  cat <<USAGE
+
+Usage: ${0##*/} [OPTION] eigen-VERSION
+options:
+  -force        Force compilation, even if binary already exists
+  -gcc          Force use of gcc/g++
+  -toolchain PATH   Specify toolchain file 
+  -list         List available unpacked source versions
+  -help         Display usage help
+
+* Build eigen
+      ${PACKAGE:-[unspecified]}
+
+USAGE
+  showDownloadHint eigen
+  exit 0 # Clean exit
+}
+#------------------------------------------------------------------------------
+exportCompiler # Compiler info for Eigen/configure
+
+unset optForce
+
+# Parse options
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+  '') ;; # Ignore empty
+  -h | -help*) printHelp ;;
+  -list) printVersions ;;
+  -gcc) useGcc ;;
+  -force) optForce=true ;;
+  -toolchain)
+    [ "$#" -ge 2 ] || die "'$1' option requires an argument"
+    toolchainFile="${2%%/}"
+    shift
+    ;;
+
+  eigen/* | sources/eigen-* | \
+    eigen-[0-9]*)
+    PACKAGE="${1%%/}"
+    ;;
+  *)
+    die "unknown option/argument: '$1'"
+    ;;
+  esac
+  shift
+done
+
+if [ -z "$PACKAGE" ]; then
+  die "The Eigen package/version not specified"
+elif _foamIsNone "$PACKAGE" || _foamIsSystem "$PACKAGE"; then
+  echo "Using none/system (skip ThirdParty build of Eigen)"
+  exit 0
+fi
+
+#------------------------------------------------------------------------------
+#
+# Build Eigen
+#   *PACKAGE : name-version of the package
+#   *SOURCE  : location of original sources
+#   *PREFIX  : installation directory
+
+PKG_SOURCE="$(findSourceDir "$PACKAGE")"
+PACKAGE="$(basename "$PACKAGE")"
+PKG_PREFIX="$installBASE/$PACKAGE"
+export GIT_DIR="$PKG_SOURCE/.git"
+
+if [ -z "$optForce" ] &&
+  [ -d "$PKG_PREFIX" ] &&
+  [ -r "$PKG_PREFIX/include/eigen3" ]; then
+  echo "Already built: $PACKAGE"
+else
+  echo "Starting build: $PACKAGE"
+  (
+    PKG_BUILD="$buildBASE/$PACKAGE"
+    cd "$PKG_SOURCE" || exit
+    make distclean 2>/dev/null || true
+
+    rm -rf "$PKG_BUILD"
+    mkdir -p "$PKG_BUILD"
+
+    unset buildOpt
+    if [ -n "$toolchainFile" ]; then
+      [ ! -e "$toolchainFile" ] && die "Toolchain file '${toolchainFile}' not exists!"
+      buildOpt="${buildOpt} --toolchain ${TOOLCHAIN_FILE}"
+    fi
+
+    cmake=$(findCMake)
+
+    cd "$PKG_BUILD" && set -x &&
+      ${cmake:?} \
+        -B "$PKG_BUILD" \
+        -S "$PKG_SOURCE" \
+        -DEIGEN_BUILD_DOC=OFF \
+        -DBUILD_TESTING=OFF \
+        -DCMAKE_INSTALL_PREFIX="$PKG_PREFIX" \
+        -DCMAKE_BUILD_TYPE=Release \
+        $buildOpt &&
+      set +x &&
+      time make -j $WM_NCOMPPROCS &&
+      make install &&
+      echo "Built: $PACKAGE"
+  ) || {
+    echo "Error building: $PACKAGE"
+    exit 1
+  }
+fi
+
+#------------------------------------------------------------------------------
