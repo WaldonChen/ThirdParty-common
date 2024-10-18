@@ -92,6 +92,7 @@ options:
   -no-bin           Suppress creation of kahip binaries (default)
   -mpi-home PATH    With hint for MPI_HOME
   -no-mpi           Compile without MPI
+  -toolchain PATH   Specify toolchain file 
   -list             List available unpacked source versions
   -help             Display usage help
 
@@ -134,6 +135,12 @@ do
         [ "$#" -ge 2 ] || die "'$1' option requires an argument"
         export MPI_HOME="${2%%/}"
         case "${MPI_HOME:-none}" in (false|none) unset MPI_HOME;; esac
+        shift
+        ;;
+
+    -toolchain)
+        [ "$#" -ge 2 ] || die "'$1' option requires an argument"
+        toolchainFile="${2%%/}"
         shift
         ;;
 
@@ -421,6 +428,11 @@ then
     if [ "$optWithMPI" = false ]
     then
         buildOpt="${buildOpt} -DPARHIP=OFF"
+    fi
+    if [ -n "$toolchainFile" ]
+    then
+        [ ! -e "$toolchainFile" ] && die "Toolchain file '${toolchainFile}' not exists!"
+        buildOpt="${buildOpt} --toolchain ${TOOLCHAIN_FILE}"
     fi
 
     cmake=$(findCMake)
