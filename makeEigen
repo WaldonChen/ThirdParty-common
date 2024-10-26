@@ -21,6 +21,21 @@
 # ----------------------------------------------
 # NO USER-CONFIGURABLE SETTINGS WITHIN THIS FILE
 #------------------------------------------------------------------------------
+# Short-circuit test for an installation
+if [ "$1" = "-test" ]
+then
+    [ "$#" -eq 2 ] || { echo "${0##*/} -test : needs 1 argument"; exit 1; }
+    dir="${2%/}" # <- *_ARCH_PATH
+
+    package="eigen"
+    if [ -d "$dir/include/eigen3" ]
+    then
+        echo "    $package include: $dir/include/eigen3"
+        exit 0
+    fi
+    exit 2
+fi
+#------------------------------------------------------------------------------
 if :; then # Run from third-party directory
   cd "${0%/*}" || exit
   wmakeCheckPwd "$WM_THIRD_PARTY_DIR" 2>/dev/null || {
@@ -111,8 +126,8 @@ PKG_PREFIX="$installBASE/$PACKAGE"
 export GIT_DIR="$PKG_SOURCE/.git"
 
 # Override as per config file (if any)
-[ -n "$SCOTCH_ARCH_PATH" ] && PKG_PREFIX="$SCOTCH_ARCH_PATH"
-[ -d "$PKG_SOURCE/src" ] || {
+[ -n "$EIGEN_ARCH_PATH" ] && PKG_PREFIX="$EIGEN_ARCH_PATH"
+[ -d "$PKG_SOURCE/Eigen" ] || {
     echo "Missing sources: '$PACKAGE'"
     showDownloadHint eigen
     exit 2
