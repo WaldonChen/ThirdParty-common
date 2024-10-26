@@ -20,6 +20,8 @@
 # ----------------------------------------------
 # NO USER-CONFIGURABLE SETTINGS WITHIN THIS FILE
 #------------------------------------------------------------------------------
+[ "${WM_ARCH}" = linuxSW64 ] && EXT_SO=.a || EXT_SO=.so
+
 if :    # Run from third-party directory
 then
     cd "${0%/*}" || exit
@@ -48,7 +50,7 @@ printVersions() { listPackageVersions scotch; exit 0; }
 printHelp() {
     /bin/cat<<USAGE
 
-Usage: ${0##*/} [OPTION] [libso] [scotch-VERSION]
+Usage: ${0##*/} [OPTION] [lib|libso] [scotch-VERSION]
 options:
   -force        Force compilation, even if include/library already exists
                 Also force build attempt of pt-scotch (mingw)
@@ -148,6 +150,7 @@ export GIT_DIR="$PKG_SOURCE/.git"
 
 unset MakefileInc
 for ending in \
+    "${WM_ARCH}".stlib \
     "$(uname -s)-${WM_COMPILER}".shlib \
     "$(uname -s)".shlib \
     Linux.shlib \
@@ -369,7 +372,7 @@ export WM_LABEL_SIZE="$optLabelSize"
 # Test installation. May or may not have libscotcherrexit.so
 if [ -z "$optForce" ] \
 && [ -f "$includedir"/scotch.h ] \
-&& haveLibso "$libdir"/libscotch
+&& ( haveLibso "$libdir"/libscotch || [ -f "$libdir"/libscotch.a ])
 then
     echo "    scotch include: $includedir"
     echo "    scotch library: $libdir"
@@ -471,7 +474,7 @@ esac
 # Build ptscotch if normal scotch was built (has include and library)
 # (reuse prefix/include/lib dirs set above)
 if [ -f "$includedir"/scotch.h ] \
-&& haveLibso "$libdir"/libscotch
+&& ( haveLibso "$libdir"/libscotch || [ -f "$libdir"/libscotch.a ])
 then
     echo
     echo ========================================
@@ -493,7 +496,7 @@ fi
 
 if [ -z "$optForce" ] \
 && [ -f "$includedir"/ptscotch.h ] \
-&& haveLibso "$libdir"/libptscotch
+&& ( haveLibso "$libdir"/libscotch || [ -f "$libdir"/libscotch.a ])
 then
     echo "    ptscotch include: $includedir"
     echo "    ptscotch library: $libdir"
@@ -541,7 +544,7 @@ else
 
     # Remove any old symlinks etc
     rm -rf "$includedir"/scotch*.h 2>/dev/null
-    rm -rf "$libdir"/libscotch*.so 2>/dev/null
+    rm -rf "$libdir"/libscotch*.* 2>/dev/null
 
     make realclean 2>/dev/null  # Extra safety
     make -j $WM_NCOMPPROCS $make_targets \

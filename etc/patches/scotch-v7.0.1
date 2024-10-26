@@ -46,3 +46,58 @@
  scotch				:	libscotch
  					(cd scotch ;         $(MAKE) VERSION=$(VERSION) RELEASE=$(RELEASE) PATCHLEVEL=$(PATCHLEVEL) scotch && $(MAKE) install)
  					(cd libscotchmetis ; $(MAKE)                                                                scotch && $(MAKE) install)
+diff --git a/src/libscotch/Makefile b/src/libscotch/Makefile
+index 79fb715..960d93b 100644
+--- a/src/libscotch/Makefile
++++ b/src/libscotch/Makefile
+@@ -3245,19 +3245,19 @@ ptdummysizes$(EXE)		:	dummysizes.c				\
+ 
+ scotch.h			:	dummysizes$(EXE)			\
+ 					library.h
+-					./dummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library.h scotch.h
++					../../openfoam/bsub.sh ./dummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library.h scotch.h
+ 
+ scotchf.h			:	dummysizes$(EXE) 			\
+ 					library_f.h
+-					./dummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library_f.h scotchf.h
++					../../openfoam/bsub.sh ./dummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library_f.h scotchf.h
+ 
+ ptscotch.h			:	ptdummysizes$(EXE)			\
+ 					library_pt.h
+-					./ptdummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library_pt.h ptscotch.h
++					../../openfoam/bsub.sh ./ptdummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library_pt.h ptscotch.h
+ 
+ ptscotchf.h			:	ptdummysizes$(EXE)			\
+ 					library_pt_f.h
+-					./ptdummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library_pt_f.h ptscotchf.h
++					../../openfoam/bsub.sh ./ptdummysizes$(EXE) "-s$(SCOTCH_NAME_SUFFIX)" library_pt_f.h ptscotchf.h
+ 
+ libscotch$(LIB)			:	$(LIBSCOTCHDEPS)
+ 					$(AR) $(ARFLAGS) $(@) $(?)
+diff --git a/src/libscotchmetis/Makefile b/src/libscotchmetis/Makefile
+index 7bc1762..90fbc14 100644
+--- a/src/libscotchmetis/Makefile
++++ b/src/libscotchmetis/Makefile
+@@ -95,11 +95,11 @@ realclean			:	clean
+ 
+ metis.h				:	../libscotch/dummysizes$(EXE)		\
+ 					library_metis.h
+-					../libscotch/dummysizes$(EXE) library_metis.h metis.h
++					../../openfoam/bsub.sh ../libscotch/dummysizes$(EXE) library_metis.h metis.h
+ 
+ metisf.h			:	../libscotch/dummysizes$(EXE)		\
+ 					library_metis_f.h
+-					../libscotch/dummysizes$(EXE) library_metis_f.h metisf.h
++					../../openfoam/bsub.sh ../libscotch/dummysizes$(EXE) library_metis_f.h metisf.h
+ 
+ metis_graph_dual_$(V)$(OBJ)	:	metis_graph_dual.c			\
+ 					../libscotch/module.h			\
+@@ -167,7 +167,7 @@ metis_options_f_$(V)$(OBJ)	:	metis_options_f.c			\
+ 
+ parmetis.h			:	../libscotch/dummysizes$(EXE)		\
+ 					library_parmetis.h
+-					../libscotch/dummysizes$(EXE) library_parmetis.h parmetis.h
++					../../openfoam/bsub.sh ../libscotch/dummysizes$(EXE) library_parmetis.h parmetis.h
+ 
+ parmetis_dgraph_order_$(V)$(OBJ):	parmetis_dgraph_order.c			\
+ 					../libscotch/module.h			\

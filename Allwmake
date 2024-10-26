@@ -64,6 +64,23 @@ esac
 #------------------------------------------------------------------------------
 echo
 echo ========================================
+# Get EIGEN_ARCH_PATH
+if settings=$($WM_PROJECT_DIR/bin/foamEtcFile config.sh/eigen)
+then
+    . $settings
+fi
+if [ -n "$EIGEN_ARCH_PATH" ]
+then
+    echo Eigen3
+    ./makeEigen -test "$EIGEN_ARCH_PATH" || \
+    ./makeEigen || warnBuildIssues Eigen
+else
+    warnNotFound Eigen   # is optional
+fi
+
+#------------------------------------------------------------------------------
+echo
+echo ========================================
 # Get KAHIP_ARCH_PATH
 if settings=$($WM_PROJECT_DIR/bin/foamEtcFile config.sh/kahip)
 then
