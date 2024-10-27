@@ -81,6 +81,23 @@ fi
 #------------------------------------------------------------------------------
 echo
 echo ========================================
+# Get GSL_ARCH_PATH
+if settings=$($WM_PROJECT_DIR/bin/foamEtcFile config.sh/gsl)
+then
+    . $settings
+fi
+if [ -n "$GSL_ARCH_PATH" ]
+then
+    echo gsl
+    ./makeGsl -test "$GSL_ARCH_PATH" || \
+    ./makeGsl || warnBuildIssues Gsl
+else
+    warnNotFound Gsl
+fi
+
+#------------------------------------------------------------------------------
+echo
+echo ========================================
 # Get KAHIP_ARCH_PATH
 if settings=$($WM_PROJECT_DIR/bin/foamEtcFile config.sh/kahip)
 then
