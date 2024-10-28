@@ -135,6 +135,8 @@ else
     cd "$PKG_SOURCE" || exit
     make distclean 2>/dev/null || true
 
+    applyPatch "$PACKAGE" . # patch at parent-level
+
     rm -rf "$PKG_BUILD"
     mkdir -p "$PKG_BUILD"
 

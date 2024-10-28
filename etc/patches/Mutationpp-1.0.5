@@ -1,0 +1,26 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index fee53b1..984b192 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -41,7 +41,7 @@ get_property(mutation++_SRCS GLOBAL PROPERTY mutation++_SRCS)
+ if (SKBUILD)
+     add_library(mutation++ OBJECT ${mutation++_SRCS})
+ else()
+-    add_library(mutation++ SHARED ${mutation++_SRCS})
++    add_library(mutation++ STATIC ${mutation++_SRCS})
+     add_library(mutation++::mutation++ ALIAS mutation++)
+ endif()
+ 
+diff --git a/src/numerics/Functors.h b/src/numerics/Functors.h
+index 94354a6..fd8943b 100644
+--- a/src/numerics/Functors.h
++++ b/src/numerics/Functors.h
+@@ -43,7 +43,7 @@ public: \
+ };
+ 
+ /// Unary functor class f(x) = log(x).
+-UNARY_FUNCTOR(Log, std::log(x))
++// UNARY_FUNCTOR(Log, std::log(x))
+ 
+ /// Unary functor class f(x) = exp(x).
+ UNARY_FUNCTOR(Exp, std::exp(x))
