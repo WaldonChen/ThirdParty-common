@@ -136,6 +136,22 @@ else
     warnNotFound ADIOS2   # is optional
 fi
 
+#------------------------------------------------------------------------------
+echo
+echo ========================================
+# Get Eigen3_ARCH_PATH
+if settings=$($WM_PROJECT_DIR/bin/foamEtcFile config.sh/eigen)
+then
+    . $settings
+fi
+if [ -n "$Eigen3_ARCH_PATH" ]
+then
+    echo Eigen3
+    ./makeEigen3 -test "$Eigen3_ARCH_PATH" || \
+    ./makeEigen3 || warnBuildIssues Eigen3
+else
+    warnNotFound Eigen3   # is optional
+fi
 
 #------------------------------------------------------------------------------
 
