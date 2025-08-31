@@ -565,6 +565,8 @@ easier to use `grep` and find the relevant pages and links.
 [page eigen]:     https://eigen.tuxfamily.org/index.php
 [link eigen]:     https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz
 
+[link spectra]:   https://github.com/yixuan/spectra/archive/refs/tags/v1.0.0.tar.gz
+
 <!-- general -->
 [page cmake]:     http://www.cmake.org/
 [link cmake]:     https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz
