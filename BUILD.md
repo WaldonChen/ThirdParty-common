@@ -567,6 +567,8 @@ easier to use `grep` and find the relevant pages and links.
 
 [link spectra]:   https://github.com/yixuan/spectra/archive/refs/tags/v1.0.0.tar.gz
 
+[link ckiii]:     https://gitee.com/waldonchen/libck/releases/download/v0.1.1/libck-v0.1.1.tar.gz
+
 <!-- general -->
 [page cmake]:     http://www.cmake.org/
 [link cmake]:     https://cmake.org/files/v3.8/cmake-3.8.2.tar.gz
