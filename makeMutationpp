@@ -1,0 +1,193 @@
+#!/bin/sh
+#------------------------------------------------------------------------------
+# =========                 |
+# \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+#  \\    /   O peration     |
+#   \\  /    A nd           | www.openfoam.com
+#    \\/     M anipulation  |
+#------------------------------------------------------------------------------
+#     Copyright (C) 2019-2021 OpenCFD Ltd.
+#------------------------------------------------------------------------------
+# License
+#     This file is part of OpenFOAM, distributed under GPL-3.0-or-later.
+#
+# Script
+#     makeMutationpp
+#
+# Description
+#     Build the Mutationpp libraries, optionally build binaries
+#
+# ----------------------------------------------
+# NO USER-CONFIGURABLE SETTINGS WITHIN THIS FILE
+#------------------------------------------------------------------------------
+# Short-circuit test for an installation
+if [ "$1" = "-test" ]
+then
+    [ "$#" -eq 2 ] || { echo "${0##*/} -test : needs 1 argument"; exit 1; }
+    dir="${2%/}" # <- *_ARCH_PATH
+    [ -d "$dir/include" ] || exit 2
+
+    package="Mutationpp"
+    if [ -d "$dir/include" ]; then
+      echo "    $package include: $dir/include"
+      exit 0
+    fi
+    exit 2
+fi
+#------------------------------------------------------------------------------
+if :; then # Run from third-party directory
+  cd "${0%/*}" || exit
+  wmakeCheckPwd "$WM_THIRD_PARTY_DIR" 2>/dev/null || {
+    echo "Error (${0##*/}) : not located in \$WM_THIRD_PARTY_DIR"
+    echo "    Check your OpenFOAM environment and installation"
+    exit 1
+  }
+fi
+. "${WM_THIRD_PARTY_DIR:?}"/etc/tools/ThirdPartyFunctions
+#------------------------------------------------------------------------------
+_foamConfig Mutationpp # Get Mutationpp_ARCH_PATH, Mutationpp_VERSION
+
+PACKAGE="${Mutationpp_VERSION:-system}"
+
+if nonStandardPlatforms; then # Possibly unreliable inherited values
+  unset Mutationpp_ARCH_PATH
+fi
+
+#------------------------------------------------------------------------------
+printVersions() {
+  listPackageVersions Mutationpp
+  exit 0
+}
+printHelp() {
+  /bin/cat <<USAGE
+
+Usage: ${0##*/} [OPTION] [libso] [Mutationpp-VERSION]
+options:
+  -force        Force compilation, even if include/library already exists
+                Also force build attempt of Mutationpp
+  -gcc          Force use of gcc/g++
+  -toolchain PATH   Specify toolchain file 
+  -list         List available unpacked source versions
+  -help         Display usage help
+
+* Build Mutationpp
+      ${PACKAGE:-[unspecified]}
+
+USAGE
+  showDownloadHint Mutationpp
+  exit 0 # Clean exit
+}
+#------------------------------------------------------------------------------
+
+unset optForce optNoExtlib
+optBinaries=false
+optLabelSize="${WM_LABEL_SIZE:-32}"
+
+# Parse options
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+  '') ;; # Ignore empty
+  -h | -help*) printHelp ;;
+  -list) printVersions ;;
+  -force) optForce=true ;;
+  -bin) optBinaries=true ;;
+  -no-bin) optBinaries=false ;;
+
+  Mutationpp/ | sources/Mutationpp* | \
+    Mutationpp-[0-9]* | Mutationpp-v[0-9]* | Mutationpp-git | Mutationpp_*)
+    PACKAGE="${1%%/}"
+    unset Mutationpp_ARCH_PATH # Avoid inconsistency
+    ;;
+  *)
+    die "unknown option/argument: '$1'"
+    ;;
+  esac
+  shift
+done
+
+if [ -z "$PACKAGE" ]; then
+  die "The Mutationpp package/version not specified"
+elif _foamIsNone "$PACKAGE" || _foamIsSystem "$PACKAGE"; then
+  echo "Using none/system (skip ThirdParty build of Mutationpp)"
+  exit 0
+fi
+
+if [ "$optNoExtlib" = true ]; then
+  unset FOAM_EXT_LIBBIN
+else
+  requireExtLibBin
+fi
+
+#------------------------------------------------------------------------------
+#
+# Build Mutationpp
+#   Mutationpp_ARCH_PATH : installation directory (as per config file)
+#
+#   *PACKAGE : name-version of the package
+#   *SOURCE  : location of original sources
+#   *PREFIX  : installation directory
+
+PKG_SOURCE="$(findSourceDir "$PACKAGE")"
+PACKAGE="$(basename "$PACKAGE")"
+PKG_PREFIX="$installBASE/$PACKAGE"
+export GIT_DIR="$PKG_SOURCE/.git"
+
+# Override as per config file (if any)
+[ -n "$Mutationpp_ARCH_PATH" ] && PKG_PREFIX="$Mutationpp_ARCH_PATH"
+
+[ -d "$PKG_SOURCE" ] || {
+  echo "Missing sources: '$PACKAGE'"
+  showDownloadHint Mutationpp
+  exit 2
+}
+
+#------------------------------------------------------------------------------
+
+# Use cmake for the Mutationpp build
+
+if [ -z "$optForce" ] &&
+  [ -d "$PKG_PREFIX" ] &&
+  [ -r "$PKG_PREFIX/include/mutation++/mutation++.h" ] &&
+  [ -r "$PKG_PREFIX/lib/libmutation++$EXT_SO" ]; then
+  echo "Already built: $PACKAGE"
+else
+  echo "Starting build: $PACKAGE"
+  (
+    PKG_BUILD="$buildBASE/$PACKAGE"
+    cd "$PKG_SOURCE" || exit\
+    
+    # fix mutationpp macro definition conflicts 
+    # Log -> Log1
+    sed -i 's/UNARY_FUNCTOR(Log, std::log(x))/UNARY_FUNCTOR(Log1, std::log(x))/' "${PKG_SOURCE}/src/numerics/Functors.h"
+  
+    make distclean 2>/dev/null || true
+
+    rm -rf "$PKG_BUILD"
+    mkdir -p "$PKG_BUILD"
+
+    unset buildOpt
+    if [ -n "$toolchainFile" ]; then
+      [ ! -e "$toolchainFile" ] && die "Toolchain file '${toolchainFile}' not exists!"
+      buildOpt="${buildOpt} --toolchain ${TOOLCHAIN_FILE}"
+    fi
+
+    cmake=$(findCMake)
+
+    cd "$PKG_BUILD" && set -x &&
+      ${cmake:?} \
+        -B "$PKG_BUILD" \
+        -S "$PKG_SOURCE" \
+        -DCMAKE_INSTALL_PREFIX="$PKG_PREFIX" \
+        -DCMAKE_BUILD_TYPE=Release \
+        $buildOpt &&
+      set +x &&
+      time make -j $WM_NCOMPPROCS &&
+      make install &&
+      echo "Built: $PACKAGE"
+  ) || {
+    echo "Error building: $PACKAGE"
+    exit 1
+  }
+fi
+
+#------------------------------------------------------------------------------
